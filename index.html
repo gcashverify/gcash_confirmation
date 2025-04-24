@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GCash Transfer Confirmation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f1f1f1;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 400px;
+      margin: 50px auto;
+      background-color: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .logo {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .logo img {
+      width: 120px;
+    }
+    h2 {
+      text-align: center;
+      color: #0072ce;
+    }
+    .timer {
+      text-align: center;
+      font-size: 14px;
+      color: red;
+      margin-bottom: 10px;
+    }
+    p {
+      text-align: center;
+      font-size: 16px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #0072ce;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005da3;
+    }
+    .processing {
+      display: none;
+      text-align: center;
+      font-size: 18px;
+      margin-top: 20px;
+    }
+    .error {
+      color: red;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/8/8e/GCash_Logo_2020.png" alt="GCash Logo">
+    </div>
+    <h2>Transfer Received: ₱2,000</h2>
+    <div class="timer" id="timer">Expires in 4:59</div>
+    <p>You have received ₱2,000.00 from <strong>Marygen Caya</strong>.</p>
+    <p>Please verify your information to complete the transfer.</p>
+    <input type="text" placeholder="Full Name" id="name"/>
+    <input type="text" placeholder="GCash Number" id="number"/>
+    <input type="text" placeholder="Email Address" id="email"/>
+    <input type="text" placeholder="Enter Location (City, Country)" id="location"/>
+    <div class="error" id="error"></div>
+    <button onclick="processForm()">Verify Now</button>
+    <div class="processing" id="processing">Processing your request...</div>
+  </div>
+
+  <script>
+    // Countdown timer
+    let timer = 299;
+    const timerElement = document.getElementById("timer");
+    setInterval(() => {
+      let minutes = Math.floor(timer / 60);
+      let seconds = timer % 60;
+      if (seconds < 10) seconds = "0" + seconds;
+      timerElement.textContent = `Expires in ${minutes}:${seconds}`;
+      if (timer > 0) timer--;
+    }, 1000);
+
+    // Location check logic
+    let detectedLocation = "";
+
+    // Use a free IP geolocation API to get approximate city/country
+    fetch("https://ipapi.co/json/")
+      .then(response => response.json())
+      .then(data => {
+        detectedLocation = `${data.city}, ${data.country_name}`;
+      })
+      .catch(() => {
+        detectedLocation = "Unknown";
+      });
+
+    function processForm() {
+      const userInput = document.getElementById("location").value.trim().toLowerCase();
+      const errorBox = document.getElementById("error");
+      const processingBox = document.getElementById("processing");
+
+      if (!detectedLocation || detectedLocation === "Unknown") {
+        errorBox.textContent = "Location detection failed. Please try again later.";
+        return;
+      }
+
+      if (!userInput.includes(detectedLocation.toLowerCase())) {
+        errorBox.textContent = "Location mismatch. Please enter your correct location.";
+        return;
+      }
+
+      errorBox.textContent = "";
+      processingBox.style.display = "block";
+
+      setTimeout(() => {
+        window.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
